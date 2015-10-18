@@ -20,7 +20,7 @@ public class IPinyouLogParserIterator implements Iterator<LogItem> {
         } catch (IOException e) {
             return false;
         }
-        return nextLine.length() > 0;
+        return nextLine != null && nextLine.length() > 0;
     }
 
     public LogItem next() {

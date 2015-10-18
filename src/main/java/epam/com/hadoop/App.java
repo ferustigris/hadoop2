@@ -2,6 +2,8 @@ package epam.com.hadoop;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Map;
+
 //import org.apache.hadoop.fs.*;
 //import org.apache.hadoop.conf.*;
 //import org.apache.hadoop.util.*;
@@ -20,7 +22,13 @@ public class App
                 calc.calculate(parser.next());
             }
         }
+
 //        Configuration conf = new Configuration();
 //        FileSystem fileSystem = FileSystem.get(conf);
+
+        Map<String, Long> results = calc.getResults();
+        for(String key: results.keySet()) {
+            System.out.println(key + " - " + results.get(key));
+        }
     }
 }
