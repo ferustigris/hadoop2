@@ -2,8 +2,11 @@ package epam.com.hadoop;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Iterator;
+
+import org.apache.hadoop.fs.FSDataInputStream;
 
 public class IPinyouLogParserIterator implements Iterator<LogItem> {
     private BufferedReader reader;
@@ -14,7 +17,7 @@ public class IPinyouLogParserIterator implements Iterator<LogItem> {
         reader = new BufferedReader(fileReader);
     }
 
-    public boolean hasNext() {
+	public boolean hasNext() {
         try {
             nextLine = reader.readLine();
         } catch (IOException e) {

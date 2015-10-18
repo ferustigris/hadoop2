@@ -1,34 +1,50 @@
 package epam.com.hadoop;
 
-import java.io.FileReader;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Map;
 
-//import org.apache.hadoop.fs.*;
-//import org.apache.hadoop.conf.*;
-//import org.apache.hadoop.util.*;
-//import org.apache.commons.compress.compressors.bzip2.*;
 public class App
 {
-    static private String[] files = {"test.txt"};
+    static private final String HDFS_URL = "hdfs://192.168.56.101";
+    static private final String FILES_URL = "/my";
 
     public static void main( String[] args ) throws IOException
     {
-        Calculator calc = new Calculator();
 
-        for(String fn: files) {
-            IPinyouLogParserIterator parser = new IPinyouLogParserIterator(new FileReader(fn));
+        Configuration conf = new Configuration();
+        conf.set("fs.default.name", HDFS_URL);
+        
+        FileSystem fileSystem = FileSystem.get(conf);
+        FileStatus[] files = fileSystem.listStatus(new Path(FILES_URL));
+
+        Calculator calc = new Calculator();
+        
+        for(FileStatus stat: files) {
+            System.out.println(stat.getPath().getName() + " is processed");
+            FSDataInputStream in = fileSystem.open(stat.getPath());
+            IPinyouLogParserIterator parser = new IPinyouLogParserIterator(new InputStreamReader(in));
             while(parser.hasNext()) {
                 calc.calculate(parser.next());
             }
         }
 
-//        Configuration conf = new Configuration();
-//        FileSystem fileSystem = FileSystem.get(conf);
-
+        // results output
+        BufferedWriter out = new BufferedWriter(new FileWriter("results.txt"));
         Map<String, Long> results = calc.getResults();
         for(String key: results.keySet()) {
             System.out.println(key + " - " + results.get(key));
+            out.write(key + " " + results.get(key));
         }
     }
 }
