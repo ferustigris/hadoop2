@@ -2,6 +2,7 @@ package epam.com.hadoop;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -40,11 +41,11 @@ public class App
         }
 
         // results output
-        BufferedWriter out = new BufferedWriter(new FileWriter("results.txt"));
+        FSDataOutputStream out = fileSystem.create(new Path(FILES_URL + "/../results.txt"));
         Map<String, Long> results = calc.getResults();
         for(String key: results.keySet()) {
             System.out.println(key + " - " + results.get(key));
-            out.write(key + " " + results.get(key));
+            out.writeUTF(key + " " + results.get(key) + "\n");
         }
     }
 }

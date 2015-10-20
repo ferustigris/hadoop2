@@ -68,6 +68,7 @@
                 <archive>
                     <manifest>
                         <addClasspath>true</addClasspath>
+                        <mainClass>epam.com.hadoop.App</mainClass>
                     </manifest>
                 </archive>
             </configuration>
